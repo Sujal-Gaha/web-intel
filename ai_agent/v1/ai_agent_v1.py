@@ -1,4 +1,4 @@
-from ai_agent_base import BaseAIAgent
+from ai_agent.base.base_agent import BaseAIAgent
 import ollama, json, os
 from utils.logger import get_logger
 

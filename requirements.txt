@@ -54,6 +54,7 @@ multidict==6.6.4
 networkx==3.5
 nltk==3.9.2
 numpy==2.3.3
+ollama==0.6.0
 openai==2.1.0
 packaging==25.0
 patchright==1.55.2

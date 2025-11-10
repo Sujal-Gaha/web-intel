@@ -1,4 +1,4 @@
-from ai_agent_base import BaseAIAgent
+from ai_agent.base.base_agent import BaseAIAgent
 from groq import Groq
 import json, os
 from dotenv import load_dotenv
