@@ -8,7 +8,7 @@ from web_intel.cli.ui.console import console
 from web_intel.core.config import Config
 
 app = typer.Typer(
-    name="web-intel",
+    name="wi",
     help="🕷️ Intelligent web crawling and AI-powered querying",
     add_completion=False,
 )
