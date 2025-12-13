@@ -1,4 +1,5 @@
 """Query commands."""
+
 import typer
 import asyncio
 from pathlib import Path
@@ -43,7 +44,7 @@ def query_ask(
 ):
     """
     Ask a question about crawled content.
-    
+
     Examples:
         web-intel query ask "What is this site about?" -s data/example.md
         web-intel query ask "Tell me about pricing" -s data/example.md --session my-research
@@ -64,16 +65,16 @@ async def _query_ask_async(
         config = Config()
         if model:
             config.ollama_model = model
-        
+
         # Show header
         console.rule(f"[bold blue]Question")
         console.print(f"[cyan]{question}[/cyan]\n")
-        
+
         # Initialize components
         agent = AgentFactory.create("ollama", config)
         storage = StorageFactory.create(config.storage_type, config)
         orchestrator = AgentOrchestrator(agent, storage)
-        
+
         # Process query
         if stream:
             console.print("[bold green]Answer:[/bold green]")
@@ -91,7 +92,7 @@ async def _query_ask_async(
                     source_path=source,
                     session_id=session,
                 )
-            
+
             console.print()
             console.print("[bold green]Answer:[/bold green]")
             console.print(result.response)
@@ -100,17 +101,15 @@ async def _query_ask_async(
                 f"[dim]Model: {result.model_used} | "
                 f"Tokens: {result.tokens_used or 'N/A'}[/dim]"
             )
-        
+
         # Show session info
         if session:
-            console.print(
-                f"\n[dim]💾 Session:[/dim] {session}"
-            )
+            console.print(f"\n[dim]💾 Session:[/dim] {session}")
             console.print(
                 f"[cyan]Continue conversation:[/cyan] "
-                f"web-intel query ask \"follow-up question\" -s {source} --session {session}"
+                f'web-intel query ask "follow-up question" -s {source} --session {session}'
             )
-        
+
     except StorageError as e:
         console.print(f"[red]Storage error:[/red] {e}")
         raise typer.Exit(1)
@@ -140,7 +139,7 @@ def query_interactive(
 ):
     """
     Start an interactive query session.
-    
+
     Example:
         web-intel query interactive -s data/example.md --session research
     """
@@ -152,45 +151,45 @@ async def _query_interactive_async(source: Path, session: Optional[str]):
     # Generate session ID if not provided
     if not session:
         from datetime import datetime
+
         session = f"session_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-    
+
     console.rule(f"[bold blue]Interactive Mode")
     console.print(f"[dim]Source:[/dim] {source}")
     console.print(f"[dim]Session:[/dim] {session}")
     console.print(f"[dim]Commands:[/dim] 'exit' or 'quit' to stop\n")
-    
+
     # Initialize components
     config = Config()
     agent = AgentFactory.create("ollama", config)
     storage = StorageFactory.create(config.storage_type, config)
     orchestrator = AgentOrchestrator(agent, storage)
-    
+
     # Interactive loop
     while True:
         try:
             # Get user input
             question = console.input("[bold cyan]You:[/bold cyan] ")
-            
+
             if question.lower() in ["exit", "quit"]:
                 console.print("[yellow]Goodbye![/yellow]")
                 break
-            
+
             if not question.strip():
                 continue
-            
+
             # Process query
             with console.status("[bold blue]Thinking..."):
                 result = await orchestrator.query_with_source(
                     prompt=question,
                     source_path=source,
-                    session_id=session,
+                    session_id=session, 
                 )
-            
+
             console.print(f"[bold green]Assistant:[/bold green] {result.response}\n")
-            
+
         except KeyboardInterrupt:
             console.print("\n[yellow]Interrupted. Goodbye![/yellow]")
             break
         except Exception as e:
             console.print(f"[red]Error:[/red] {e}\n")
-

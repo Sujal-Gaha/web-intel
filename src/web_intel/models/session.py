@@ -1,21 +1,87 @@
-from dataclasses import dataclass
-from typing import Any, Dict, List, Optional
+"""Session management models."""
+
+from dataclasses import dataclass, field
+from typing import List, Dict, Any, Optional
+from datetime import datetime
+
 
 @dataclass
 class Message:
-    role: str
-    content: str
+    """A single message in a conversation."""
 
+    role: str  # 'user' or 'assistant'
+    content: str
+    timestamp: datetime = field(default_factory=datetime.now)
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
 class Session:
-    def __init__(self, session_id: str):
-        self.session_id = session_id
-        self.messages: List[Message] = []
-        self.context: Optional[str] = None
-        self.metadata: Dict[str, Any] = {}
-    
-    def add_message(self, role: str, content: str):
-        self.messages.append(Message(role=role, content=content))
-    
-    def get_context_window(self, max_tokens: int) -> List[Message]:
-        # Return messages that fit within token limit
-        return []
+    """Conversation session."""
+
+    session_id: str
+    messages: List[Message] = field(default_factory=list)
+    context_source: Optional[str] = None  # Path to source content
+    created_at: datetime = field(default_factory=datetime.now)
+    updated_at: datetime = field(default_factory=datetime.now)
+    metadata: Dict[str, Any] = field(default_factory=dict)
+
+    def add_message(self, role: str, content: str, **metadata):
+        """Add a message to the session."""
+        message = Message(role=role, content=content, metadata=metadata)
+        self.messages.append(message)
+        self.updated_at = datetime.now()
+
+    def get_recent_messages(self, n: int = 5) -> List[Dict[str, str]]:
+        """
+        Get recent messages formatted for context.
+
+        Args:
+            n: Number of recent messages
+
+        Returns:
+            List of dicts with 'role' and 'content'
+        """
+        recent = self.messages[-n:] if len(self.messages) > n else self.messages
+        return [{"role": msg.role, "content": msg.content} for msg in recent]
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert to dictionary for serialization."""
+        return {
+            "session_id": self.session_id,
+            "messages": [
+                {
+                    "role": msg.role,
+                    "content": msg.content,
+                    "timestamp": msg.timestamp.isoformat(),
+                    "metadata": msg.metadata,
+                }
+                for msg in self.messages
+            ],
+            "context_source": self.context_source,
+            "created_at": self.created_at.isoformat(),
+            "updated_at": self.updated_at.isoformat(),
+            "metadata": self.metadata,
+        }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "Session":
+        """Create Session from dictionary."""
+        messages = [
+            Message(
+                role=msg["role"],
+                content=msg["content"],
+                timestamp=datetime.fromisoformat(msg["timestamp"]),
+                metadata=msg.get("metadata", {}),
+            )
+            for msg in data.get("messages", [])
+        ]
+
+        return cls(
+            session_id=data["session_id"],
+            messages=messages,
+            context_source=data.get("context_source"),
+            created_at=datetime.fromisoformat(data["created_at"]),
+            updated_at=datetime.fromisoformat(data["updated_at"]),
+            metadata=data.get("metadata", {}),
+        )

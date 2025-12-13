@@ -1,4 +1,5 @@
 """Main CLI application using Typer."""
+
 import typer
 from typing import Optional
 from pathlib import Path

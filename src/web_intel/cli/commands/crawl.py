@@ -4,6 +4,7 @@ from pathlib import Path
 
 app = typer.Typer(help="Crawl websites")
 
+
 @app.command("url")
 async def crawl_url(
     url: str = typer.Argument(..., help="URL to crawl"),

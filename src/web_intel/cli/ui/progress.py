@@ -1,5 +1,12 @@
 from contextlib import contextmanager
-from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
+from rich.progress import (
+    Progress,
+    SpinnerColumn,
+    TextColumn,
+    BarColumn,
+    TaskProgressColumn,
+)
+
 
 @contextmanager
 def show_progress():
