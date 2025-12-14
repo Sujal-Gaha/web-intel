@@ -1,4 +1,5 @@
 """Base crawler interface."""
+
 from abc import ABC, abstractmethod
 from typing import Optional
 

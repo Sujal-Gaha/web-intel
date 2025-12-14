@@ -73,7 +73,7 @@ class Crawl4AICrawler(BaseCrawler):
             )
 
             pages: list[PageResult] = []
-            failed_count = 0 
+            failed_count = 0
 
             # Report start
             if self.progress_callback:
@@ -86,7 +86,7 @@ class Crawl4AICrawler(BaseCrawler):
 
                     # Create timeout wrapper
                     async def process_with_timeout():
-                        nonlocal failed_count 
+                        nonlocal failed_count
                         idx = 0
                         async for result in self.iterate_results(results):
                             idx += 1

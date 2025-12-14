@@ -20,7 +20,8 @@ class Config(BaseSettings):
     )
 
     ollama_model: str = Field(
-        default="deepseek-r1:14b", description="Ollama model to use (llama2, mistral, etc.)"
+        default="deepseek-r1:14b",
+        description="Ollama model to use (llama2, mistral, etc.)",
     )
 
     # ========== Crawler Settings ==========

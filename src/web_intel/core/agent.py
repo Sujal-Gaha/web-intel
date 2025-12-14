@@ -1,4 +1,3 @@
-# Example: core/agent.py
 from web_intel.core.config import Config
 from web_intel.storage.base import BaseStorage
 

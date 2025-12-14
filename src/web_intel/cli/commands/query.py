@@ -183,7 +183,7 @@ async def _query_interactive_async(source: Path, session: Optional[str]):
                 result = await orchestrator.query_with_source(
                     prompt=question,
                     source_path=source,
-                    session_id=session, 
+                    session_id=session,
                 )
 
             console.print(f"[bold green]Assistant:[/bold green] {result.response}\n")
