@@ -26,11 +26,11 @@ class Session:
     updated_at: datetime = field(default_factory=datetime.now)
     metadata: Dict[str, Any] = field(default_factory=dict)
 
-    def add_message(self, role: str, content: str, **metadata):
+    def add_message(self, role: str, content: str, **metadata) -> None:
         """Add a message to the session."""
-        message = Message(role=role, content=content, metadata=metadata)
+        message: Message = Message(role=role, content=content, metadata=metadata)
         self.messages.append(message)
-        self.updated_at = datetime.now()
+        self.updated_at: datetime = datetime.now()
 
     def get_recent_messages(self, n: int = 5) -> List[Dict[str, str]]:
         """
@@ -42,7 +42,9 @@ class Session:
         Returns:
             List of dicts with 'role' and 'content'
         """
-        recent = self.messages[-n:] if len(self.messages) > n else self.messages
+        recent: list[Message] = (
+            self.messages[-n:] if len(self.messages) > n else self.messages
+        )
         return [{"role": msg.role, "content": msg.content} for msg in recent]
 
     def to_dict(self) -> Dict[str, Any]:
@@ -67,7 +69,7 @@ class Session:
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Session":
         """Create Session from dictionary."""
-        messages = [
+        messages: list[Message] = [
             Message(
                 role=msg["role"],
                 content=msg["content"],

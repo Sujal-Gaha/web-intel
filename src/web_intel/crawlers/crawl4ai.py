@@ -1,8 +1,8 @@
 """Crawl4AI implementation - fixed for async generator results."""
 
 import asyncio
-from typing import Optional, Callable
-from urllib.parse import urlparse
+from typing import Any, Optional, Callable
+from urllib.parse import ParseResult, urlparse
 from datetime import datetime
 
 from crawl4ai import AsyncWebCrawler, CrawlerRunConfig
@@ -22,16 +22,16 @@ class Crawl4AICrawler(BaseCrawler):
         self,
         config: Config,
         progress_callback: Optional[Callable[[str, int, int], None]] = None,
-    ):
+    ) -> None:
         """Initialize Crawl4AI crawler."""
-        self.config = config
+        self.config: Config = config
         self.progress_callback = progress_callback
-        self.timeout = config.crawler_timeout
+        self.timeout: int = config.crawler_timeout
 
     async def validate_url(self, url: str) -> bool:
         """Validate URL format and accessibility."""
         try:
-            parsed = urlparse(url)
+            parsed: ParseResult = urlparse(url)
             if parsed.scheme not in ["http", "https"]:
                 return False
             if not parsed.netloc:
@@ -60,7 +60,7 @@ class Crawl4AICrawler(BaseCrawler):
         **options,
     ) -> CrawlResult:
         """Crawl a URL using Crawl4AI."""
-        start_time = datetime.now()
+        start_time: datetime = datetime.now()
 
         # Validate URL first
         if not await self.validate_url(url):
@@ -124,7 +124,7 @@ class Crawl4AICrawler(BaseCrawler):
                     )
 
             # Build final result
-            end_time = datetime.now()
+            end_time: datetime = datetime.now()
 
             return CrawlResult(
                 source_url=url,
@@ -151,14 +151,16 @@ class Crawl4AICrawler(BaseCrawler):
         self, depth: int, filter_chain: FilterChain, **options
     ) -> CrawlerRunConfig:
         """Build Crawl4AI configuration."""
-        strategy = BFSDeepCrawlStrategy(max_depth=depth, filter_chain=filter_chain)
+        strategy: BFSDeepCrawlStrategy = BFSDeepCrawlStrategy(
+            max_depth=depth, filter_chain=filter_chain
+        )
 
         return CrawlerRunConfig(deep_crawl_strategy=strategy, **options)
 
     def _extract_page_result(self, result) -> PageResult:
         """Extract PageResult from Crawl4AI result."""
         # Extract URL
-        url = getattr(result, "url", "Unknown")
+        url: Any | str = getattr(result, "url", "Unknown")
 
         # Extract content (prefer markdown)
         content = ""

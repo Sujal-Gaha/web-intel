@@ -24,10 +24,10 @@ class AgentFactory:
         config: Config,
     ) -> BaseAgent:
         """Create an agent instance."""
-        agent_class = cls._agents.get(agent_type)
+        agent_class: AgentConstructor | None = cls._agents.get(agent_type)
 
         if not agent_class:
-            available = ", ".join(cls._agents.keys())
+            available: str = ", ".join(cls._agents.keys())
             raise ValueError(
                 f"Unknown agent type: {agent_type}. " f"Available: {available}"
             )

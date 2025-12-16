@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Dict, Any, Optional
 from web_intel.models.crawl_result import CrawlResult
 
 

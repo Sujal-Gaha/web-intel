@@ -25,7 +25,7 @@ class QueryContext:
     conversation_history: List[Dict[str, str]] = field(default_factory=list)
     """Previous messages in the conversation (for multi-turn dialogs)"""
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate fields after initialization."""
         if not self.content:
             raise ValueError("Content cannot be empty")
@@ -59,7 +59,7 @@ class QueryResult:
     timestamp: datetime = field(default_factory=datetime.now)
     """When this response was generated"""
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate fields after initialization."""
         if not self.response:
             raise ValueError("Response cannot be empty")

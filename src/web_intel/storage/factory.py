@@ -25,10 +25,10 @@ class StorageFactory:
         config: Config,
     ) -> BaseStorage:
         """Create a storage instance."""
-        storage_class = cls._storage_types.get(storage_type)
+        storage_class: StorageConstructor | None = cls._storage_types.get(storage_type)
 
         if not storage_class:
-            available = ", ".join(cls._storage_types.keys())
+            available: str = ", ".join(cls._storage_types.keys())
             raise ValueError(
                 f"Unknown storage type: {storage_type}. " f"Available: {available}"
             )

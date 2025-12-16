@@ -4,7 +4,7 @@ from rich.console import Console
 from rich.theme import Theme
 
 # Custom theme
-custom_theme = Theme(
+custom_theme: Theme = Theme(
     {
         "info": "cyan",
         "warning": "yellow",
@@ -14,4 +14,4 @@ custom_theme = Theme(
 )
 
 # Global console instance
-console = Console(theme=custom_theme)
+console: Console = Console(theme=custom_theme)

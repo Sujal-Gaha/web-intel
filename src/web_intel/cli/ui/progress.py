@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+from typing import Any, Generator
 from rich.progress import (
     Progress,
     SpinnerColumn,
@@ -9,7 +10,7 @@ from rich.progress import (
 
 
 @contextmanager
-def show_progress():
+def show_progress() -> Generator[Progress, Any, None]:
     """Context manager for showing progress."""
     with Progress(
         SpinnerColumn(),

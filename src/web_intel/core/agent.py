@@ -4,7 +4,9 @@ from web_intel.storage.base import BaseStorage
 
 
 class Agent:
-    def __init__(self, llm_client: BaseLLMClient, storage: BaseStorage, config: Config):
-        self.llm = llm_client
-        self.storage = storage
-        self.config = config
+    def __init__(
+        self, llm_client: BaseLLMClient, storage: BaseStorage, config: Config
+    ) -> None:
+        self.llm: BaseLLMClient = llm_client
+        self.storage: BaseStorage = storage
+        self.config: Config = config

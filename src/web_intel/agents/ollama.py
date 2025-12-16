@@ -1,7 +1,7 @@
 """Ollama agent implementation."""
 
 import json
-from typing import AsyncIterator, Optional
+from typing import Any, AsyncIterator
 import aiohttp
 
 from web_intel.agents.base import BaseAgent
@@ -13,21 +13,21 @@ from web_intel.utils.exceptions import AgentError
 class OllamaAgent(BaseAgent):
     """Ollama-based AI agent implementation."""
 
-    def __init__(self, config: Config):
+    def __init__(self, config: Config) -> None:
         """
         Initialize Ollama agent.
 
         Args:
             config: Application configuration
         """
-        self.config = config
-        self.host = config.ollama_host
-        self.model = config.ollama_model
-        self.max_context = config.max_context_length
+        self.config: Config = config
+        self.host: str = config.ollama_host
+        self.model: str = config.ollama_model
+        self.max_context: int = config.max_context_length
 
         # API endpoints
-        self.generate_url = f"{self.host}/api/generate"
-        self.chat_url = f"{self.host}/api/chat"
+        self.generate_url: str = f"{self.host}/api/generate"
+        self.chat_url: str = f"{self.host}/api/chat"
 
     async def validate_connection(self) -> bool:
         """
@@ -56,13 +56,13 @@ class OllamaAgent(BaseAgent):
             Prepared content
         """
         # Rough approximation: 1 token ≈ 4 characters
-        max_chars = max_tokens * 4
+        max_chars: int = max_tokens * 4
 
         if len(content) <= max_chars:
             return content
 
         # Truncate and add notice
-        truncated = content[:max_chars]
+        truncated: str = content[:max_chars]
         return f"{truncated}\n\n[Note: Content truncated to fit context window]"
 
     async def query(
@@ -84,9 +84,9 @@ class OllamaAgent(BaseAgent):
             AgentError: If query fails
         """
         try:
-            full_prompt = self._build_prompt(prompt, context)
+            full_prompt: str = self._build_prompt(prompt, context)
 
-            payload = {
+            payload: dict[str, Any] = {
                 "model": self.model,
                 "prompt": full_prompt,
                 "stream": False,
@@ -100,7 +100,7 @@ class OllamaAgent(BaseAgent):
                     timeout=aiohttp.ClientTimeout(total=120),
                 ) as resp:
                     if resp.status != 200:
-                        error_text = await resp.text()
+                        error_text: str = await resp.text()
                         raise AgentError(
                             f"Ollama API error ({resp.status}): {error_text}"
                         )
@@ -149,9 +149,9 @@ class OllamaAgent(BaseAgent):
             str: Response tokens
         """
         try:
-            full_prompt = self._build_prompt(prompt, context)
+            full_prompt: str = self._build_prompt(prompt, context)
 
-            payload = {
+            payload: dict[str, Any] = {
                 "model": self.model,
                 "prompt": full_prompt,
                 "stream": True,
@@ -165,7 +165,7 @@ class OllamaAgent(BaseAgent):
                     timeout=aiohttp.ClientTimeout(total=300),
                 ) as resp:
                     if resp.status != 200:
-                        error_text = await resp.text()
+                        error_text: str = await resp.text()
                         raise AgentError(
                             f"Ollama API error ({resp.status}): {error_text}"
                         )
@@ -201,7 +201,9 @@ class OllamaAgent(BaseAgent):
             Full prompt string
         """
         # Prepare content
-        prepared_content = self.prepare_context(context.content, context.max_tokens)
+        prepared_content: str = self.prepare_context(
+            context.content, context.max_tokens
+        )
 
         # Build system instruction
         system = (
@@ -214,12 +216,12 @@ class OllamaAgent(BaseAgent):
         if context.conversation_history:
             history = "\n\nPrevious conversation:\n"
             for msg in context.conversation_history[-5:]:  # Last 5 messages
-                role = msg.get("role", "user")
-                content = msg.get("content", "")
+                role: str = msg.get("role", "user")
+                content: str = msg.get("content", "")
                 history += f"{role.capitalize()}: {content}\n"
 
         # Combine everything
-        full_prompt = f"""{system}
+        full_prompt: str = f"""{system}
 
 Content to analyze:
 {prepared_content}

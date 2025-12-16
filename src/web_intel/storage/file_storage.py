@@ -1,9 +1,10 @@
 """File-based storage implementation."""
 
 import json
+from typing import Any, Dict
+from urllib.parse import ParseResult
 import aiofiles
 from pathlib import Path
-from typing import Optional
 from datetime import datetime
 
 from web_intel.storage.base import BaseStorage
@@ -16,17 +17,17 @@ from web_intel.utils.exceptions import StorageError
 class FileStorage(BaseStorage):
     """File-based storage implementation."""
 
-    def __init__(self, config: Config):
+    def __init__(self, config: Config) -> None:
         """
         Initialize file storage.
 
         Args:
             config: Application configuration
         """
-        self.config = config
-        self.base_path = Path(config.storage_path)
-        self.crawls_path = self.base_path / "crawls"
-        self.sessions_path = self.base_path / "sessions"
+        self.config: Config = config
+        self.base_path: Path = Path(config.storage_path)
+        self.crawls_path: Path = self.base_path / "crawls"
+        self.sessions_path: Path = self.base_path / "sessions"
 
         # Create directories
         self.crawls_path.mkdir(parents=True, exist_ok=True)
@@ -49,10 +50,10 @@ class FileStorage(BaseStorage):
             # Generate ID from URL and timestamp
             from urllib.parse import urlparse
 
-            parsed = urlparse(result.source_url)
-            domain = parsed.netloc.replace(".", "_")
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            result_id = f"{domain}_{timestamp}"
+            parsed: ParseResult = urlparse(result.source_url)
+            domain: str = parsed.netloc.replace(".", "_")
+            timestamp: str = datetime.now().strftime("%Y%m%d_%H%M%S")
+            result_id: str = f"{domain}_{timestamp}"
 
             if format == "markdown":
                 await self._save_as_markdown(result, result_id)
@@ -66,11 +67,11 @@ class FileStorage(BaseStorage):
         except Exception as e:
             raise StorageError(f"Failed to save crawl result: {e}") from e
 
-    async def _save_as_markdown(self, result: CrawlResult, result_id: str):
+    async def _save_as_markdown(self, result: CrawlResult, result_id: str) -> None:
         """Save result as markdown file."""
-        filepath = self.crawls_path / f"{result_id}.md"
+        filepath: Path = self.crawls_path / f"{result_id}.md"
 
-        content = f"""# Crawl Result: {result.source_url}
+        content: str = f"""# Crawl Result: {result.source_url}
 
 **Crawled at:** {result.started_at.isoformat()}
 **Total pages:** {result.total_pages}
@@ -84,11 +85,11 @@ class FileStorage(BaseStorage):
         async with aiofiles.open(filepath, "w", encoding="utf-8") as f:
             await f.write(content)
 
-    async def _save_as_json(self, result: CrawlResult, result_id: str):
+    async def _save_as_json(self, result: CrawlResult, result_id: str) -> None:
         """Save result as JSON file."""
-        filepath = self.crawls_path / f"{result_id}.json"
+        filepath: Path = self.crawls_path / f"{result_id}.json"
 
-        data = {
+        data: dict[str, Any] = {
             "source_url": result.source_url,
             "started_at": result.started_at.isoformat(),
             "completed_at": (
@@ -116,17 +117,17 @@ class FileStorage(BaseStorage):
 
     async def load_crawl_result(self, result_id: str) -> CrawlResult:
         """Load crawl result from JSON file."""
-        filepath = self.crawls_path / f"{result_id}.json"
+        filepath: Path = self.crawls_path / f"{result_id}.json"
 
         if not filepath.exists():
             raise StorageError(f"Crawl result not found: {result_id}")
 
         try:
             async with aiofiles.open(filepath, "r", encoding="utf-8") as f:
-                content = await f.read()
+                content: str = await f.read()
                 data = json.loads(content)
 
-            pages = [
+            pages: list[PageResult] = [
                 PageResult(
                     url=page["url"],
                     content=page["content"],
@@ -178,10 +179,10 @@ class FileStorage(BaseStorage):
 
     async def save_session(self, session: Session) -> None:
         """Save conversation session."""
-        filepath = self.sessions_path / f"{session.session_id}.json"
+        filepath: Path = self.sessions_path / f"{session.session_id}.json"
 
         try:
-            data = session.to_dict()
+            data: Dict[str, Any] = session.to_dict()
             async with aiofiles.open(filepath, "w", encoding="utf-8") as f:
                 await f.write(json.dumps(data, indent=2))
         except Exception as e:
@@ -189,7 +190,7 @@ class FileStorage(BaseStorage):
 
     async def load_session(self, session_id: str) -> Session:
         """Load conversation session."""
-        filepath = self.sessions_path / f"{session_id}.json"
+        filepath: Path = self.sessions_path / f"{session_id}.json"
 
         if not filepath.exists():
             # Create new session if doesn't exist
@@ -197,7 +198,7 @@ class FileStorage(BaseStorage):
 
         try:
             async with aiofiles.open(filepath, "r", encoding="utf-8") as f:
-                content = await f.read()
+                content: str = await f.read()
                 data = json.loads(content)
 
             return Session.from_dict(data)
@@ -207,5 +208,5 @@ class FileStorage(BaseStorage):
 
     async def session_exists(self, session_id: str) -> bool:
         """Check if session exists."""
-        filepath = self.sessions_path / f"{session_id}.json"
+        filepath: Path = self.sessions_path / f"{session_id}.json"
         return filepath.exists()

@@ -27,10 +27,10 @@ class CrawlerFactory:
         progress_callback: Optional[Callable[[str, int, int], None]] = None,
     ) -> BaseCrawler:
         """Create a crawler instance."""
-        crawler_class = cls._crawlers.get(crawler_type)
+        crawler_class: CrawlerConstructor | None = cls._crawlers.get(crawler_type)
 
         if not crawler_class:
-            available = ", ".join(cls._crawlers.keys())
+            available: str = ", ".join(cls._crawlers.keys())
             raise ValueError(
                 f"Unknown crawler type: '{crawler_type}'. "
                 f"Available crawlers: {available}"

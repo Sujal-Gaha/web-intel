@@ -1,7 +1,6 @@
 """Base crawler interface."""
 
 from abc import ABC, abstractmethod
-from typing import Optional
 
 from web_intel.models.crawl_result import CrawlResult
 

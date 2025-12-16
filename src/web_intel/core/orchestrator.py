@@ -1,7 +1,7 @@
 """Orchestrator for coordinating agents and storage."""
 
 from pathlib import Path
-from typing import Optional, AsyncIterator
+from typing import Any, Optional, AsyncIterator
 
 from web_intel.agents.base import BaseAgent
 from web_intel.storage.base import BaseStorage
@@ -20,7 +20,7 @@ class AgentOrchestrator:
         self,
         agent: BaseAgent,
         storage: BaseStorage,
-    ):
+    ) -> None:
         """
         Initialize orchestrator.
 
@@ -28,8 +28,8 @@ class AgentOrchestrator:
             agent: AI agent instance
             storage: Storage backend instance
         """
-        self.agent = agent
-        self.storage = storage
+        self.agent: BaseAgent = agent
+        self.storage: BaseStorage = storage
 
     async def query_with_source(
         self,
@@ -58,17 +58,17 @@ class AgentOrchestrator:
         """
         try:
             # Load source content
-            content = await self.storage.load_content_from_path(source_path)
+            content: str = await self.storage.load_content_from_path(source_path)
 
             # Load or create session
-            conversation_history = []
-            session: Optional[Session] = None  # ✓ Initialize to None
+            conversation_history: list[Any] = []
+            session: Optional[Session] = None
             if session_id:
-                session = await self.storage.load_session(session_id)
-                conversation_history = session.get_recent_messages(n=5)
+                session: Session = await self.storage.load_session(session_id)
+                conversation_history: list[Any] = session.get_recent_messages(n=5)
 
             # Build context
-            context = QueryContext(
+            context: QueryContext = QueryContext(
                 content=content,
                 max_tokens=max_tokens,
                 conversation_history=conversation_history,
@@ -79,7 +79,9 @@ class AgentOrchestrator:
             )
 
             # Query agent
-            result = await self.agent.query(prompt, context, **agent_kwargs)
+            result: QueryResult = await self.agent.query(
+                prompt, context, **agent_kwargs
+            )
 
             # Save to session if provided
             if session_id and session is not None:  # ✓ Check both conditions
@@ -122,17 +124,17 @@ class AgentOrchestrator:
         """
         try:
             # Load content
-            content = await self.storage.load_content_from_path(source_path)
+            content: str = await self.storage.load_content_from_path(source_path)
 
             # Load session if exists
-            conversation_history = []
-            session: Optional[Session] = None  # ✓ Initialize to None
+            conversation_history: list[Any] = []
+            session: Optional[Session] = None
             if session_id:
-                session = await self.storage.load_session(session_id)
-                conversation_history = session.get_recent_messages(n=5)
+                session: Session = await self.storage.load_session(session_id)
+                conversation_history: list[Any] = session.get_recent_messages(n=5)
 
             # Build context
-            context = QueryContext(
+            context: QueryContext = QueryContext(
                 content=content,
                 max_tokens=max_tokens,
                 conversation_history=conversation_history,
@@ -144,13 +146,12 @@ class AgentOrchestrator:
 
             # Stream response
             full_response = ""
-            # ✓ Changed: directly iterate, don't await
             async for chunk in self.agent.stream_query(prompt, context, **agent_kwargs):
                 full_response += chunk
                 yield chunk
 
             # Save to session after streaming completes
-            if session_id and session is not None:  # ✓ Check both conditions
+            if session_id and session is not None:
                 session.add_message("user", prompt)
                 session.add_message("assistant", full_response)
                 session.context_source = str(source_path)
