@@ -1,7 +1,7 @@
 """Configuration management using Pydantic."""
 
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field, field_validator
 
@@ -81,15 +81,15 @@ class Config(BaseSettings):
     @field_validator("storage_path")
     def create_storage_path(cls, v: str) -> str:
         """Create storage directory if it doesn't exist."""
-        path = Path(v)
+        path: Path = Path(v)
         path.mkdir(parents=True, exist_ok=True)
         return str(path.absolute())
 
     @field_validator("log_level")
     def validate_log_level(cls, v: str) -> str:
         """Validate log level."""
-        valid_levels = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
-        v_upper = v.upper()
+        valid_levels: list[str] = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+        v_upper: str = v.upper()
         if v_upper not in valid_levels:
             raise ValueError(f"Invalid log level: {v}. Must be one of {valid_levels}")
         return v_upper
@@ -104,16 +104,19 @@ class Config(BaseSettings):
         Returns:
             Path object
         """
-        base = Path(self.storage_path)
+        base: Path = Path(self.storage_path)
         if subdir:
-            path = base / subdir
+            path: Path = base / subdir
             path.mkdir(parents=True, exist_ok=True)
             return path
         return base
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Any]:
         """Convert configuration to dictionary."""
         return self.model_dump()
+
+    def update_model(self, model: str) -> None:
+        self.ollama_model = model
 
     def __repr__(self) -> str:
         return (

@@ -4,15 +4,19 @@ import typer
 import asyncio
 from pathlib import Path
 from typing import Optional
+from typer import Typer
 
+from web_intel.agents.base import BaseAgent
 from web_intel.cli.ui.console import console
 from web_intel.core.config import Config
 from web_intel.agents.factory import AgentFactory
+from web_intel.models.query import QueryResult
+from web_intel.storage.base import BaseStorage
 from web_intel.storage.factory import StorageFactory
 from web_intel.core.orchestrator import AgentOrchestrator
 from web_intel.utils.exceptions import AgentError, StorageError
 
-app = typer.Typer(help="🤖 AI query commands")
+app: Typer = typer.Typer(help="🤖 AI query commands")
 
 
 @app.command("ask")
@@ -41,7 +45,7 @@ def query_ask(
         "--stream",
         help="Stream response token by token",
     ),
-):
+) -> None:
     """
     Ask a question about crawled content.
 
@@ -58,22 +62,22 @@ async def _query_ask_async(
     session: Optional[str],
     model: Optional[str],
     stream: bool,
-):
+) -> None:
     """Async implementation of query_ask."""
     try:
         # Load config
-        config = Config()
+        config: Config = Config()
         if model:
-            config.ollama_model = model
+            config.update_model(model)
 
         # Show header
         console.rule(f"[bold blue]Question")
         console.print(f"[cyan]{question}[/cyan]\n")
 
         # Initialize components
-        agent = AgentFactory.create("ollama", config)
-        storage = StorageFactory.create(config.storage_type, config)
-        orchestrator = AgentOrchestrator(agent, storage)
+        agent: BaseAgent = AgentFactory.create("ollama", config)
+        storage: BaseStorage = StorageFactory.create(config.storage_type, config)
+        orchestrator: AgentOrchestrator = AgentOrchestrator(agent, storage)
 
         # Process query
         if stream:
@@ -87,7 +91,7 @@ async def _query_ask_async(
             console.print("\n")
         else:
             with console.status("[bold blue]Thinking..."):
-                result = await orchestrator.query_with_source(
+                result: QueryResult = await orchestrator.query_with_source(
                     prompt=question,
                     source_path=source,
                     session_id=session,
@@ -136,7 +140,7 @@ def query_interactive(
         "--session",
         help="Session ID for this conversation",
     ),
-):
+) -> None:
     """
     Start an interactive query session.
 
@@ -146,7 +150,7 @@ def query_interactive(
     asyncio.run(_query_interactive_async(source, session))
 
 
-async def _query_interactive_async(source: Path, session: Optional[str]):
+async def _query_interactive_async(source: Path, session: Optional[str]) -> None:
     """Async implementation of interactive mode."""
     # Generate session ID if not provided
     if not session:
@@ -160,16 +164,16 @@ async def _query_interactive_async(source: Path, session: Optional[str]):
     console.print(f"[dim]Commands:[/dim] 'exit' or 'quit' to stop\n")
 
     # Initialize components
-    config = Config()
-    agent = AgentFactory.create("ollama", config)
-    storage = StorageFactory.create(config.storage_type, config)
-    orchestrator = AgentOrchestrator(agent, storage)
+    config: Config = Config()
+    agent: BaseAgent = AgentFactory.create("ollama", config)
+    storage: BaseStorage = StorageFactory.create(config.storage_type, config)
+    orchestrator: AgentOrchestrator = AgentOrchestrator(agent, storage)
 
     # Interactive loop
     while True:
         try:
             # Get user input
-            question = console.input("[bold cyan]You:[/bold cyan] ")
+            question: str = console.input("[bold cyan]You:[/bold cyan] ")
 
             if question.lower() in ["exit", "quit"]:
                 console.print("[yellow]Goodbye![/yellow]")
@@ -180,7 +184,7 @@ async def _query_interactive_async(source: Path, session: Optional[str]):
 
             # Process query
             with console.status("[bold blue]Thinking..."):
-                result = await orchestrator.query_with_source(
+                result: QueryResult = await orchestrator.query_with_source(
                     prompt=question,
                     source_path=source,
                     session_id=session,

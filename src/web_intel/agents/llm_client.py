@@ -6,17 +6,17 @@ class BaseLLMClient(ABC):
     """Abstract base for all LLM providers."""
 
     @abstractmethod
-    async def generate() -> Dict[str, Any]:
+    async def generate(self) -> Dict[str, Any]:
         """Non-streaming generation"""
 
     @abstractmethod
-    async def stream_generate() -> AsyncIterator[str]:
+    async def stream_generate(self) -> AsyncIterator[str]:
         """Streaming generation"""
 
     @abstractmethod
-    async def validate_connection() -> bool:
+    async def validate_connection(self) -> bool:
         """Check if service is accessible"""
 
     @abstractmethod
-    def get_model_info() -> Dict[str, Any]:
+    def get_model_info(self) -> Dict[str, Any]:
         """Get model information"""
