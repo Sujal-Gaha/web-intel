@@ -33,6 +33,7 @@ dev = [
 
 
 [project.scripts]
+# web-intel = "web_intel.cli.app:app"
 wi = "web_intel.cli.app:app"
 
 [tool.setuptools.packages.find]

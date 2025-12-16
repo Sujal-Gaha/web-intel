@@ -1,3 +1,4 @@
+from web_intel.agents.llm_client import BaseLLMClient
 from web_intel.core.config import Config
 from web_intel.storage.base import BaseStorage
 

@@ -14,7 +14,6 @@ StorageConstructor = Callable[[Config], BaseStorage]
 class StorageFactory:
     """Factory for creating storage instances."""
 
-    # ✓ Fixed: Use Callable type instead of Type[BaseStorage]
     _storage_types: Dict[str, StorageConstructor] = {
         "file": FileStorage,
     }
@@ -34,7 +33,6 @@ class StorageFactory:
                 f"Unknown storage type: {storage_type}. " f"Available: {available}"
             )
 
-        # ✓ Now Pyright understands this takes (config)
         return storage_class(config)
 
     @classmethod

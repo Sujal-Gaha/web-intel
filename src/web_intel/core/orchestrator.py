@@ -1,5 +1,5 @@
-# src/web_intel/core/orchestrator.py
 """Orchestrator for coordinating agents and storage."""
+
 from pathlib import Path
 from typing import Optional, AsyncIterator
 
