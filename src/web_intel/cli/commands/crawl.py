@@ -8,6 +8,7 @@ from web_intel.cli.ui.console import console
 from web_intel.core.config import Config
 from web_intel.crawlers.base import BaseCrawler
 from web_intel.crawlers.factory import CrawlerFactory
+from web_intel.models.crawl_result import CrawlResult
 from web_intel.storage.base import BaseStorage
 from web_intel.storage.factory import StorageFactory
 from web_intel.utils.exceptions import CrawlerError, StorageError
@@ -36,6 +37,11 @@ async def _crawl_url(
 
         crawler: BaseCrawler = CrawlerFactory.create("crawl4ai", config)
         storage: BaseStorage = StorageFactory.create(config.storage_type, config)
+
+        crawl_res: CrawlResult = await crawler.crawl(url)
+
+        print(f"Crawl Result {crawl_res}")
+
     except StorageError as e:
         console.print(f"[red]Storage error: [/red] {e}")
         raise typer.Exit(1)

@@ -106,7 +106,7 @@ class AgentOrchestrator:
         session_id: Optional[str] = None,
         max_tokens: int = 4000,
         **agent_kwargs,
-    ) -> AsyncIterator[str]:  # ✓ Return type is AsyncIterator, not coroutine
+    ) -> AsyncIterator[str]:
         """
         Stream query responses token by token.
 

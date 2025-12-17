@@ -85,10 +85,10 @@ class Crawl4AICrawler(BaseCrawler):
                     results = await crawler.arun(url, config=crawler_config)
 
                     # Create timeout wrapper
-                    async def process_with_timeout():
+                    async def process_with_timeout() -> None:
                         nonlocal failed_count
                         idx = 0
-                        async for result in self.iterate_results(results):
+                        for result in results:
                             idx += 1
                             try:
                                 # Report progress
@@ -100,7 +100,7 @@ class Crawl4AICrawler(BaseCrawler):
                                     )
 
                                 # Extract page data
-                                page = self._extract_page_result(result)
+                                page: PageResult = self._extract_page_result(result)
                                 pages.append(page)
 
                                 # Check max_pages limit
@@ -108,7 +108,7 @@ class Crawl4AICrawler(BaseCrawler):
                                     break
 
                             except Exception as e:
-                                failed_count += 1  # ✓ Now this works
+                                failed_count += 1
                                 if verbose:
                                     print(f"Failed to process page: {e}")
                                 continue
