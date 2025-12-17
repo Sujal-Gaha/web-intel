@@ -36,11 +36,16 @@ async def _crawl_url(
         config: Config = Config()
 
         crawler: BaseCrawler = CrawlerFactory.create("crawl4ai", config)
-        storage: BaseStorage = StorageFactory.create(config.storage_type, config)
+        storage: BaseStorage = StorageFactory.create("file", config)
 
         crawl_res: CrawlResult = await crawler.crawl(url)
 
-        print(f"Crawl Result {crawl_res}")
+        saved_crawl_result_res: str = await storage.save_crawl_result(
+            result=crawl_res, format="json"
+        )
+
+        print(f"Crawl Response {crawl_res}")
+        print(f"Storage Response {saved_crawl_result_res}")
 
     except StorageError as e:
         console.print(f"[red]Storage error: [/red] {e}")

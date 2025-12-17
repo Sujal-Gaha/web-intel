@@ -2,6 +2,7 @@
 
 from typing import Dict, Callable
 
+from web_intel.models.crawl_result import CrawlResult
 from web_intel.storage.base import BaseStorage
 from web_intel.storage.file_storage import FileStorage
 from web_intel.core.config import Config
@@ -11,7 +12,7 @@ from web_intel.core.config import Config
 StorageConstructor = Callable[[Config], BaseStorage]
 
 
-class StorageFactory:
+class StorageFactory(BaseStorage):
     """Factory for creating storage instances."""
 
     _storage_types: Dict[str, StorageConstructor] = {
@@ -44,3 +45,9 @@ class StorageFactory:
     def list_available(cls) -> list[str]:
         """List all available storage types."""
         return list(cls._storage_types.keys())
+
+    async def save_crawl_result(
+        self, result: CrawlResult, format: str = "markdown"
+    ) -> str:
+        """Save crawl result."""
+        return await super().save_crawl_result(result, format)
