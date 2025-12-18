@@ -36,7 +36,7 @@ class AgentOrchestrator:
         prompt: str,
         source_path: Path,
         session_id: Optional[str] = None,
-        max_tokens: int = 4000,
+        max_tokens: int = 20_000,
         **agent_kwargs,
     ) -> QueryResult:
         """

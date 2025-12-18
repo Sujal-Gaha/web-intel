@@ -31,7 +31,7 @@ build/
 htmlcov/
 .tox/
 
-# Data directories (your crawled content)
+# Data directories
 data/
 *.db
 *.sqlite
