@@ -50,12 +50,6 @@ ollama pull llama2
 ollama pull mistral
 ```
 
-### 3. Git (to clone the repository)
-
-```bash
-git --version
-```
-
 ---
 
 ## 🚀 Installation
