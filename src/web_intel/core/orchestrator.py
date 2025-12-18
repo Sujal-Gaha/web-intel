@@ -64,8 +64,8 @@ class AgentOrchestrator:
             conversation_history: list[Any] = []
             session: Optional[Session] = None
             if session_id:
-                session: Session = await self.storage.load_session(session_id)
-                conversation_history: list[Any] = session.get_recent_messages(n=5)
+                session = await self.storage.load_session(session_id)
+                conversation_history = session.get_recent_messages(n=5)
 
             # Build context
             context: QueryContext = QueryContext(
@@ -84,7 +84,7 @@ class AgentOrchestrator:
             )
 
             # Save to session if provided
-            if session_id and session is not None:  # ✓ Check both conditions
+            if session_id and session is not None:
                 session.add_message("user", prompt)
                 session.add_message("assistant", result.response)
                 session.context_source = str(source_path)
@@ -104,7 +104,7 @@ class AgentOrchestrator:
         prompt: str,
         source_path: Path,
         session_id: Optional[str] = None,
-        max_tokens: int = 4000,
+        max_tokens: int = 20_000,
         **agent_kwargs,
     ) -> AsyncIterator[str]:
         """
@@ -130,8 +130,8 @@ class AgentOrchestrator:
             conversation_history: list[Any] = []
             session: Optional[Session] = None
             if session_id:
-                session: Session = await self.storage.load_session(session_id)
-                conversation_history: list[Any] = session.get_recent_messages(n=5)
+                session = await self.storage.load_session(session_id)
+                conversation_history = session.get_recent_messages(n=5)
 
             # Build context
             context: QueryContext = QueryContext(
@@ -159,29 +159,3 @@ class AgentOrchestrator:
 
         except Exception as e:
             raise AgentError(f"Stream orchestration failed: {e}") from e
-
-
-# Example usage for reference
-"""
-# In CLI command:
-config = Config()
-agent = AgentFactory.create("ollama", config)
-storage = StorageFactory.create("file", config)
-orchestrator = AgentOrchestrator(agent, storage)
-
-# Regular query
-result = await orchestrator.query_with_source(
-    prompt="What is this about?",
-    source_path=Path("data/example.md"),
-    session_id="my_session"
-)
-print(result.response)
-
-# Streaming query - notice no await here!
-async for chunk in orchestrator.stream_query(  # ✓ Direct iteration, no await
-    prompt="Explain this",
-    source_path=Path("data/example.md"),
-    session_id="my_session"
-):
-    print(chunk, end="")
-"""

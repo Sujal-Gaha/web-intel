@@ -49,7 +49,7 @@ class Config(BaseSettings):
 
     # ========== Agent Settings ==========
     max_context_length: int = Field(
-        default=4000, description="Maximum context length in tokens", ge=100
+        default=20_000, description="Maximum context length in tokens", ge=100
     )
 
     agent_temperature: float = Field(

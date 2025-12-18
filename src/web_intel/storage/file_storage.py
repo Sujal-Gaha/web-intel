@@ -1,7 +1,7 @@
 """File-based storage implementation."""
 
 import json
-from typing import Any, Dict
+from typing import Any, Dict, cast
 from urllib.parse import ParseResult
 import aiofiles
 from pathlib import Path
@@ -173,7 +173,7 @@ class FileStorage(BaseStorage):
 
         try:
             async with aiofiles.open(path, "r", encoding="utf-8") as f:
-                return await f.read()
+                return cast(str, await f.read())
         except Exception as e:
             raise StorageError(f"Failed to read file: {e}") from e
 

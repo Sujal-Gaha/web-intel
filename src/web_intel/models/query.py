@@ -19,7 +19,7 @@ class QueryContext:
     metadata: Dict[str, Any] = field(default_factory=dict)
     """Additional metadata about the query"""
 
-    max_tokens: int = 4000
+    max_tokens: int = 20_000
     """Maximum tokens to use for context"""
 
     conversation_history: List[Dict[str, str]] = field(default_factory=list)
@@ -103,39 +103,3 @@ class QueryResult:
             ),
             metadata=data.get("metadata", {}),
         )
-
-
-# Example usage:
-"""
-# Creating a query context
-context = QueryContext(
-    content="This is the crawled website content...",
-    max_tokens=4000,
-    conversation_history=[
-        {"role": "user", "content": "What is this about?"},
-        {"role": "assistant", "content": "This is about..."}
-    ],
-    metadata={
-        "source_url": "https://example.com",
-        "crawl_date": "2024-01-01"
-    }
-)
-
-# Creating a query result
-result = QueryResult(
-    response="The website is about...",
-    model_used="llama2",
-    tokens_used=150,
-    finish_reason="stop",
-    metadata={
-        "total_duration": 1234567,
-        "prompt_eval_count": 50
-    }
-)
-
-# Serialize to dict
-result_dict = result.to_dict()
-
-# Deserialize from dict
-result_loaded = QueryResult.from_dict(result_dict)
-"""

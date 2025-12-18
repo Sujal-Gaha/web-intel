@@ -12,7 +12,7 @@ from web_intel.core.config import Config
 StorageConstructor = Callable[[Config], BaseStorage]
 
 
-class StorageFactory(BaseStorage):
+class StorageFactory:
     """Factory for creating storage instances."""
 
     _storage_types: Dict[str, StorageConstructor] = {
@@ -45,9 +45,3 @@ class StorageFactory(BaseStorage):
     def list_available(cls) -> list[str]:
         """List all available storage types."""
         return list(cls._storage_types.keys())
-
-    async def save_crawl_result(
-        self, result: CrawlResult, format: str = "markdown"
-    ) -> str:
-        """Save crawl result."""
-        return await super().save_crawl_result(result, format)

@@ -91,6 +91,7 @@ class OllamaAgent(BaseAgent):
                 "prompt": full_prompt,
                 "stream": False,
                 "options": {"temperature": temperature, **kwargs},
+                "think": False,
             }
 
             async with aiohttp.ClientSession() as session:
@@ -156,6 +157,7 @@ class OllamaAgent(BaseAgent):
                 "prompt": full_prompt,
                 "stream": True,
                 "options": {"temperature": temperature, **kwargs},
+                "think": False,
             }
 
             async with aiohttp.ClientSession() as session:
