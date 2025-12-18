@@ -50,8 +50,8 @@ def query_ask(
     Ask a question about crawled content.
 
     Examples:
-        web-intel query ask "What is this site about?" -s data/example.md
-        web-intel query ask "Tell me about pricing" -s data/example.md --session my-research
+        wi query ask "What is this site about?" -s data/example.md
+        wi query ask "Tell me about pricing" -s data/example.md --session my-research
     """
     asyncio.run(_query_ask_async(question, source, session, model, stream))
 
@@ -111,7 +111,7 @@ async def _query_ask_async(
             console.print(f"\n[dim]💾 Session:[/dim] {session}")
             console.print(
                 f"[cyan]Continue conversation:[/cyan] "
-                f'web-intel query ask "follow-up question" -s {source} --session {session}'
+                f'wi query ask "follow-up question" -s {source} --session {session}'
             )
 
     except StorageError as e:
@@ -145,7 +145,7 @@ def query_interactive(
     Start an interactive query session.
 
     Example:
-        web-intel query interactive -s data/example.md --session research
+        wi query interactive -s data/example.md --session research
     """
     asyncio.run(_query_interactive_async(source, session))
 

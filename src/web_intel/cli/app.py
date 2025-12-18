@@ -29,6 +29,6 @@ def version() -> None:
 @app.callback()
 def callback() -> None:
     """
-    Web Intel Agent - Crawl websites and query content with AI.
+    Web Intel - Crawl websites and query content with AI.
     """
     pass

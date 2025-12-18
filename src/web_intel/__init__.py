@@ -1,4 +1,4 @@
-"""Web Intel Agent - Intelligent web crawling and AI-powered querying."""
+"""Web Intel - Intelligent web crawling and AI-powered querying."""
 
 __version__ = "0.1.0"
 
