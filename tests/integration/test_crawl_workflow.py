@@ -1,10 +1,11 @@
 """Integration tests for crawl workflow."""
 
 import pytest
-from pathlib import Path
 
-from web_intel.core.config import Config
+from web_intel.crawlers.base import BaseCrawler
 from web_intel.crawlers.factory import CrawlerFactory
+from web_intel.models.crawl_result import CrawlResult
+from web_intel.storage.base import BaseStorage
 from web_intel.storage.factory import StorageFactory
 
 
@@ -12,16 +13,16 @@ from web_intel.storage.factory import StorageFactory
 class TestCrawlWorkflow:
     """Integration tests for complete crawl workflow."""
 
-    async def test_complete_crawl_and_save(self, test_config, tmp_path):
+    async def test_complete_crawl_and_save(self, test_config, tmp_path) -> None:
         """Test complete crawl and save workflow."""
         # Setup
         test_config.storage_path = str(tmp_path)
 
-        crawler = CrawlerFactory.create("crawl4ai", test_config)
-        storage = StorageFactory.create("file", test_config)
+        crawler: BaseCrawler = CrawlerFactory.create("crawl4ai", test_config)
+        storage: BaseStorage = StorageFactory.create("file", test_config)
 
         # Crawl (using a real simple page)
-        result = await crawler.crawl("https://example.com", depth=1)
+        result: CrawlResult = await crawler.crawl("https://example.com", depth=1)
 
         # Verify crawl result
         assert result.success is True
@@ -29,7 +30,7 @@ class TestCrawlWorkflow:
         assert len(result.pages) > 0
 
         # Save
-        result_id = await storage.save_crawl_result(result, format="markdown")
+        result_id: str = await storage.save_crawl_result(result, format="markdown")
 
         # Verify file exists
         expected_file = tmp_path / "crawls" / f"{result_id}.md"

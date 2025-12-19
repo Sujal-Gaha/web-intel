@@ -29,7 +29,7 @@ class MockAgent(BaseAgent):
         self, prompt: str, context: QueryContext, **kwargs
     ) -> AsyncIterator[str]:
         """Stream a mock response."""
-        words = f"Mock response to: {prompt}".split()
+        words: list[str] = f"Mock response to: {prompt}".split()
         for word in words:
             yield word + " "
 
