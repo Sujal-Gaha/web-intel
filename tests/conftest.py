@@ -19,11 +19,11 @@ def event_loop():
 
 # Configuration fixtures
 @pytest.fixture
-def test_config():
+def test_config() -> Config:
     """Create a test configuration."""
     return Config(
         ollama_host="http://localhost:11434",
-        ollama_model="llama2",
+        ollama_model="deepseek-r1:14b",
         storage_path="./test_data",
         crawler_timeout=10,
         max_context_length=1000,
@@ -40,7 +40,7 @@ def temp_storage_path(tmp_path):
 
 # Model fixtures
 @pytest.fixture
-def sample_page_result():
+def sample_page_result() -> PageResult:
     """Create a sample PageResult."""
     return PageResult(
         url="https://example.com",
@@ -52,7 +52,7 @@ def sample_page_result():
 
 
 @pytest.fixture
-def sample_crawl_result(sample_page_result):
+def sample_crawl_result(sample_page_result) -> CrawlResult:
     """Create a sample CrawlResult."""
     return CrawlResult(
         source_url="https://example.com",
@@ -68,7 +68,7 @@ def sample_crawl_result(sample_page_result):
 
 
 @pytest.fixture
-def sample_query_context():
+def sample_query_context() -> QueryContext:
     """Create a sample QueryContext."""
     return QueryContext(
         content="This is test content for querying.",
@@ -79,7 +79,7 @@ def sample_query_context():
 
 
 @pytest.fixture
-def sample_query_result():
+def sample_query_result() -> QueryResult:
     """Create a sample QueryResult."""
     return QueryResult(
         response="This is a test response.",
@@ -91,9 +91,9 @@ def sample_query_result():
 
 
 @pytest.fixture
-def sample_session():
+def sample_session() -> Session:
     """Create a sample Session."""
-    session = Session(session_id="test-session-123")
+    session: Session = Session(session_id="test-session-123")
     session.add_message("user", "What is this?")
     session.add_message("assistant", "This is a test.")
     return session
