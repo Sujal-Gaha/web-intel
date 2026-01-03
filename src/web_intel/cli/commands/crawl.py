@@ -19,10 +19,16 @@ app: Typer = typer.Typer(help="Crawl websites")
 @app.command("url")
 def crawl_url(
     url: str = typer.Argument(..., help="URL to crawl"),
-    output: Optional[Path] = typer.Option(None, "--output", "-o"),
-    depth: int = typer.Option(1, "--depth", "-d"),
+    output: Optional[Path] = typer.Option(None, "--output", "-o", help="Output file"),
+    depth: int = typer.Option(1, "--depth", "-d", help="Crawl depth"),
 ) -> None:
-    """Crawl a single URL"""
+    """
+    Crawl a single URL
+
+    Examples:
+        wi crawl url "https://example.com" -o data/example.md
+        wi crawl url "https://example.com" -o data/example.md -d 5
+    """
     asyncio.run(_crawl_url(url, output, depth))
 
 

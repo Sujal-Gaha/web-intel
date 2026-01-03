@@ -40,16 +40,6 @@ class Crawl4AICrawler(BaseCrawler):
         except Exception:
             return False
 
-    async def iterate_results(self, results_obj):
-        if hasattr(results_obj, "__aiter__"):
-            async for item in results_obj:
-                yield item
-        elif hasattr(results_obj, "stream"):
-            async for item in results_obj.stream():
-                yield item
-        else:
-            raise TypeError("Unsupported Crawl4AI return type")
-
     async def crawl(
         self,
         url: str,
@@ -62,12 +52,10 @@ class Crawl4AICrawler(BaseCrawler):
         """Crawl a URL using Crawl4AI."""
         start_time: datetime = datetime.now()
 
-        # Validate URL first
         if not await self.validate_url(url):
             raise CrawlerError(f"Invalid URL: {url}")
 
         try:
-            # Build crawler config
             crawler_config = self._build_config(
                 depth=depth, filter_chain=filter_chain or FilterChain([]), **options
             )
@@ -75,35 +63,29 @@ class Crawl4AICrawler(BaseCrawler):
             pages: list[PageResult] = []
             failed_count = 0
 
-            # Report start
             if self.progress_callback:
                 self.progress_callback("Starting crawl...", 0, 0)
 
-            # Crawl with timeout
             async with AsyncWebCrawler(verbose=verbose) as crawler:
                 try:
                     results = await crawler.arun(url, config=crawler_config)
-
-                    # Create timeout wrapper
+                    
                     async def process_with_timeout() -> None:
                         nonlocal failed_count
                         idx = 0
                         for result in results:
                             idx += 1
                             try:
-                                # Report progress
                                 if self.progress_callback:
                                     self.progress_callback(
                                         f"Processing page {idx}...",
                                         idx,
-                                        0,  # Total unknown when streaming
+                                        0,
                                     )
 
-                                # Extract page data
                                 page: PageResult = self._extract_page_result(result)
                                 pages.append(page)
 
-                                # Check max_pages limit
                                 if max_pages and len(pages) >= max_pages:
                                     break
 
@@ -113,7 +95,6 @@ class Crawl4AICrawler(BaseCrawler):
                                     print(f"Failed to process page: {e}")
                                 continue
 
-                    # Apply timeout to the entire processing
                     await asyncio.wait_for(
                         process_with_timeout(), timeout=self.timeout * depth
                     )
@@ -123,7 +104,6 @@ class Crawl4AICrawler(BaseCrawler):
                         f"Crawl timed out after {self.timeout * depth} seconds"
                     )
 
-            # Build final result
             end_time: datetime = datetime.now()
 
             return CrawlResult(

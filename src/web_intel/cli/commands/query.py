@@ -65,7 +65,6 @@ async def _query_ask_async(
 ) -> None:
     """Async implementation of query_ask."""
     try:
-        # Load config
         config: Config = Config()
         if model:
             config.update_model(model)

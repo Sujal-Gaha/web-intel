@@ -49,7 +49,7 @@ class Config(BaseSettings):
 
     # ========== Agent Settings ==========
     max_context_length: int = Field(
-        default=20_000, description="Maximum context length in tokens", ge=100
+        default=4000, description="Maximum context length in tokens", ge=100
     )
 
     agent_temperature: float = Field(
@@ -75,7 +75,7 @@ class Config(BaseSettings):
         env_file=".env",
         env_prefix="WEB_INTEL_",
         case_sensitive=False,
-        extra="ignore",  # Ignore extra fields
+        extra="ignore",
     )
 
     @field_validator("storage_path")
