@@ -8,12 +8,12 @@ Crawl websites with deep link traversal and query the content using local LLMs (
 
 ## ✨ Features
 
--   🕷️ **Deep Web Crawling** - Crawl websites with configurable depth using Crawl4AI
--   🤖 **AI-Powered Querying** - Ask questions about crawled content using Ollama
--   💬 **Conversation Memory** - Multi-turn conversations with session management
--   🎨 **Beautiful CLI** - Rich terminal UI with progress indicators
--   📦 **Flexible Storage** - File-based storage with easy extensibility
--   ⚡ **Async Everything** - Fast, non-blocking operations throughout
+- 🕷️ **Deep Web Crawling** - Crawl websites with configurable depth using Crawl4AI
+- 🤖 **AI-Powered Querying** - Ask questions about crawled content using Ollama
+- 💬 **Conversation Memory** - Multi-turn conversations with session management
+- 🎨 **Beautiful CLI** - Rich terminal UI with progress indicators
+- 📦 **Flexible Storage** - File-based storage with easy extensibility
+- ⚡ **Async Everything** - Fast, non-blocking operations throughout
 
 ---
 
@@ -120,13 +120,13 @@ You should see the help menu! 🎉
 
 ### Basic Workflow
 
-**Step 1: Crawl a website**
+#### **Step 1: Crawl a website**
 
 ```bash
 wi crawl url https://example.com -o data/example.md
 ```
 
-**Step 2: Query the content**
+#### **Step 2: Query the content**
 
 ```bash
 wi query ask "What is this website about?" -s data/example.md
@@ -200,7 +200,7 @@ wi query interactive -s data/example.md --session my-research
 
 **In interactive mode:**
 
-```
+```bash
 You: What is this about?
 Assistant: This website is about...
 
@@ -320,11 +320,11 @@ wi query ask "question" -s file.md -m codellama
 
 **Available Ollama models:**
 
--   `llama2` - General purpose
--   `mistral` - Fast and capable
--   `codellama` - Good for technical content
--   `mixtral` - High quality
--   See [ollama.ai/library](https://ollama.ai/library) for more
+- `llama2` - General purpose
+- `mistral` - Fast and capable
+- `codellama` - Good for technical content
+- `mixtral` - High quality
+- See [ollama.ai/library](https://ollama.ai/library) for more
 
 ---
 
@@ -446,7 +446,7 @@ We are a company that...
 
 ### Query Output
 
-```
+```bash
 Question
 ════════════════════════════════════════
 What is this website about?
@@ -462,18 +462,18 @@ Model: llama2 | Tokens: 150
 
 ## 🙏 Acknowledgments
 
--   [Crawl4AI](https://github.com/unclecode/crawl4ai) - Web crawling engine
--   [Ollama](https://ollama.ai) - Local LLM runtime
--   [Typer](https://typer.tiangolo.com) - CLI framework
--   [Rich](https://rich.readthedocs.io) - Terminal formatting
+- [Crawl4AI](https://github.com/unclecode/crawl4ai) - Web crawling engine
+- [Ollama](https://ollama.ai) - Local LLM runtime
+- [Typer](https://typer.tiangolo.com) - CLI framework
+- [Rich](https://rich.readthedocs.io) - Terminal formatting
 
 ---
 
 ## 📞 Support
 
--   **Issues**: [GitHub Issues](https://github.com/Sujal-Gaha/web-intel/issues)
--   **Documentation**: [Wiki](https://github.com/Sujal-Gaha/web-intel/wiki)
+- **Issues**: [GitHub Issues](https://github.com/Sujal-Gaha/web-intel/issues)
+- **Documentation**: [Wiki](https://github.com/Sujal-Gaha/web-intel/wiki)
 
 ---
 
-**Happy Crawling! 🕷️🤖**
+Happy Crawling! 🕷️🤖
