@@ -83,7 +83,15 @@ source .venv/bin/activate
 pip install -e ".[dev]"
 ```
 
-### 4. Configure Environment Variables
+### 4. Install Playwright Browsers
+
+The crawler requires Chromium to be installed:
+
+```bash
+playwright install chromium
+```
+
+### 5. Configure Environment Variables
 
 ```bash
 # Copy example config
@@ -106,7 +114,7 @@ WEB_INTEL_STORAGE_PATH=./data
 WEB_INTEL_MAX_CONTEXT_LENGTH=4000
 ```
 
-### 5. Verify Installation
+### 6. Verify Installation
 
 ```bash
 wi --help
